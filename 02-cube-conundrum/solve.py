@@ -41,18 +41,36 @@ def is_valid(sets):
         colors = set.split(',')
         for color in colors:
             number, which_color = color.split()
-            if which_color == 'red' and int(number) > 12:
+            if which_color == 'red' and int(number) > max_red:
                 return False
-            if which_color == 'green' and int(number) > 13:
+            if which_color == 'green' and int(number) > max_green:
                 return False
-            if which_color == 'blue' and int(number) > 14:
+            if which_color == 'blue' and int(number) > max_blue:
                 return False
     return True
 
 
 def solve_input_2(data):
-    answer = data
+    answer = 0
+    for game, sets in data.items():
+        r, g, b = find_fewest_cubes(sets)
+        answer += r * g * b
     return answer
+
+def find_fewest_cubes(sets):
+    max_red = max_green = max_blue = 0
+    for set in sets:
+        colors = set.split(',')
+        for color in colors:
+            number, which_color = color.split()
+            number = int(number)
+            if which_color == 'red':
+                max_red = max(number, max_red)
+            if which_color == 'green':
+                max_green = max(number, max_green)
+            if which_color == 'blue':
+                max_blue = max(number, max_blue)
+    return max_red, max_green, max_blue
 
 try:
     assert 'input' in sys.argv[-2]
