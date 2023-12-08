@@ -58,10 +58,42 @@ def solve_input_1(data):
             else:
                 current = data[current].R
 
+def get_to_ZZZ_from(start, data):
+    steps = 0
+    current = start
+    while True:
+        for instruction in data['instructions']:
+            if current.endswith('Z'):
+                return steps
+            steps += 1
+            if steps % 1000 == 0:
+                print(f'Progress: {steps}')
+            if instruction == 'L':
+                current = data[current].L
+            else:
+                current = data[current].R
 
 def solve_input_2(data):
-    answer = data
-    return answer
+    starting_places = [x for x in data.keys() if x.endswith('A')]
+    print(f"There are {len(starting_places)} starting places")
+    answers = []
+    for start in starting_places:
+        answers.append(get_to_ZZZ_from(start, data))
+        print(f"Progress: {answers[-1]} of {len(answers)}")
+    return lcm_list(answers)
+
+def lcm_list(alist):
+    return functools.reduce(lcm, alist)
+
+def gcd(a, b):
+    """Return greatest common divisor using Euclid's Algorithm."""
+    while b:
+        a, b = b, a % b
+    return a
+
+def lcm(a, b):
+    """Return lowest common multiple."""
+    return a * b // gcd(a, b)
 
 try:
     assert 'input' in sys.argv[-2]
