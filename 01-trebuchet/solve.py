@@ -15,10 +15,20 @@ Usage:
 '''
 
 def parse_input(lines):
-    data = []
+    data = 0
     try:
         for line in lines:
-            data.append(line.strip())
+            start = ''
+            end = ''
+            for char in line:
+                if char.isnumeric():
+                    start = char
+                    break
+            for char in reversed(line):
+                if char.isnumeric():
+                    end = char
+                    break
+            data += int(start + end)
     except FileNotFoundError:
         # Using fileinput is so handy but I also want to specify part 1 or part 2 from the command line
         pass
@@ -33,7 +43,7 @@ def solve_input_2(data):
     return answer
 
 try:
-    assert 'input' == sys.argv[-2]
+    assert 'input' in sys.argv[-2]
     assert sys.argv[-1] in ['1', '2']
     if '1' == sys.argv[-1]:
         data = parse_input(fileinput.input())
