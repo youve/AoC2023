@@ -18,22 +18,44 @@ def parse_input(lines):
     data = []
     try:
         for line in lines:
-            data.append(line.strip())
+            data.append([int(x) for x in line.strip().split()])
     except FileNotFoundError:
         # Using fileinput is so handy but I also want to specify part 1 or part 2 from the command line
         pass
     return data
 
 def solve_input_1(data):
-    answer = data
+    answer = 0
+    for line in data:
+        answer += solve_arithmetic_sequence_1(line)
     return answer
+
+def solve_arithmetic_sequence_1(line):
+    if len(set(line)) == 1:
+        return line[-1]
+    else:
+        new_line = []
+        for i in range(1, len(line)):
+            new_line.append(line[i] - line[i - 1])
+        return line[-1] + solve_arithmetic_sequence_1(new_line)
 
 def solve_input_2(data):
-    answer = data
+    answer = 0
+    for line in data:
+        answer += solve_arithmetic_sequence_2(line)
     return answer
 
+def solve_arithmetic_sequence_2(line):
+    if len(set(line)) == 1:
+        return line[0] - (line[1] - line[0])
+    else:
+        new_line = []
+        for i in range(1, len(line)):
+            new_line.append(line[i] - line[i - 1])
+        return line[0] - solve_arithmetic_sequence_2(new_line)
+
 try:
-    assert 'input' == sys.argv[-2]
+    assert 'input' in sys.argv[-2]
     assert sys.argv[-1] in ['1', '2']
     if '1' == sys.argv[-1]:
         data = parse_input(fileinput.input())
