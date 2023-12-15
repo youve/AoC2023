@@ -42,6 +42,41 @@ def hash(data):
 
 def solve_input_2(data):
     answer = 0
+    boxes = [0] * 256
+    for step in data.split(','):
+        if '=' in step:
+            label, focal_length = step.split('=')
+            focal_length = int(focal_length)
+            box = hash(label)
+            if not boxes[box]:
+                boxes[box] = [{label: focal_length}]
+            else:
+                for i, item in enumerate(boxes[box]):
+                    if label in item:
+                        boxes[box][i] = {label: focal_length}
+                        break
+                else:
+                    boxes[box].append({label: focal_length})
+        else:
+            label = step.split('-')[0]
+            box = hash(label)
+            if not boxes[box]:
+                continue
+            for i, item in enumerate(boxes[box]):
+                if label in item:
+                    break
+            if boxes[box][i].get(label):
+                del boxes[box][i]
+    return get_focusing_power(boxes)
+
+def get_focusing_power(boxes):
+    answer = 0
+    for i, box in enumerate(boxes):
+        if not box:
+            continue
+        for j, slot in enumerate(box):
+            partial = sum(slot.values()) * (i + 1) * (j + 1)
+            answer += partial
     return answer
 
 try:
