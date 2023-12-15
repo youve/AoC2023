@@ -15,25 +15,37 @@ Usage:
 '''
 
 def parse_input(lines):
-    data = []
     try:
         for line in lines:
-            data.append(line.strip())
+            data = line.strip()
     except FileNotFoundError:
         # Using fileinput is so handy but I also want to specify part 1 or part 2 from the command line
         pass
     return data
 
 def solve_input_1(data):
-    answer = data
+    answer = 0
+    for operation in data.split(','):
+        partial = hash(operation)
+        print(f'{operation} -> {partial}')
+        answer += partial
+    return answer
+
+
+def hash(data):
+    answer = 0
+    for char in data:
+        answer += ord(char)
+        answer *= 17
+        answer %= 256
     return answer
 
 def solve_input_2(data):
-    answer = data
+    answer = 0
     return answer
 
 try:
-    assert 'input' == sys.argv[-2]
+    assert 'input' in sys.argv[-2]
     assert sys.argv[-1] in ['1', '2']
     if '1' == sys.argv[-1]:
         data = parse_input(fileinput.input())
