@@ -15,17 +15,37 @@ Usage:
 '''
 
 def parse_input(lines):
-    data = []
+    data = {}
     try:
         for line in lines:
-            data.append(line.strip())
+            card, rest = line.strip().split(':')
+            winning, have = rest.split("|")
+            data[card] = [sorted(int(x) for x in winning.split()), sorted(int(x) for x in have.split())]
     except FileNotFoundError:
         # Using fileinput is so handy but I also want to specify part 1 or part 2 from the command line
         pass
     return data
 
-def solve_input_1(data):
-    answer = data
+def solve_input_1(cards):
+    answer = 0
+    for card, numbers in cards.items():
+        partial = 0
+        winning, have = numbers
+        for number in winning:
+            i = bisect.bisect_left(have, number)
+            if i >= len(have):
+                continue
+            if number == have[i]:
+                '''print('---')
+                print(winning)
+                print(have)
+                print(number)
+                print(i)'''
+                if not partial:
+                    partial = 1
+                else:
+                    partial *= 2
+        answer += partial
     return answer
 
 def solve_input_2(data):
@@ -33,7 +53,7 @@ def solve_input_2(data):
     return answer
 
 try:
-    assert 'input' == sys.argv[-2]
+    assert 'input' in sys.argv[-2]
     assert sys.argv[-1] in ['1', '2']
     if '1' == sys.argv[-1]:
         data = parse_input(fileinput.input())
